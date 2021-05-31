@@ -10,8 +10,6 @@ stages:
 - stage: Build
   jobs:
   - job: Build
-    pool:
-      vmImage: ubuntu-latest
     steps:
     - script: |
         python -m pip install --upgrade pip
