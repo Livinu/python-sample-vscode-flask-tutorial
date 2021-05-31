@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    include:
+    - master
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: master
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  condition: succeededOrFailed()
+  pool:
+    name: Default
+  steps:
+  - checkout: self
+  - task: Bash@3
+    name: dev
+    displayName: Install pip
+    inputs:
+      targetType: inline
+      script: >
+        # Write your commands here
+
+
+        echo 'Hello world'
+
+        curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+
+        python get-pip.py
+
+        export PATH=$PATH:/home/azureuser/.local/bin
+
+        pip --version
+  - task: CmdLine@2
+    displayName: Install dependencies
+    inputs:
+      script: >-
+        export PATH=$PATH:/home/azureuser/.local/bin
+
+        pip --version
+
+        pip install -r requirements.txt
+  - task: PythonScript@0
+    displayName: Run a Python script
+    inputs:
+      scriptSource: inline
+      script: print ("Hello world, you are using the self-hosting agent")
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+...
